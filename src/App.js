@@ -277,7 +277,7 @@ class App extends Component {
         <div className="container">
           <div className="box">
             <h3 className='titleStyle'>Car</h3>
-            <img className='imageStyle' src="https://ibb.co/Fh8nkbq" alt={`Image for Car`} />
+            <img className='imageStyle' src="https://raw.githubusercontent.com/antonisb1/Blockchain/master/public/car_photo.jpg" alt={`Image for Car`} />
             <button className='buttonStyle' onClick={() => this.bid('car')}>
               Bid
             </button>
@@ -285,7 +285,7 @@ class App extends Component {
           </div>
           <div className="box">
             <h3 className='titleStyle'>Phone</h3>
-            <img className='phoneStyle' src="../../phone_photo.jpg" alt={`Image for Phone`} />
+            <img className='phoneStyle' src="https://raw.githubusercontent.com/antonisb1/Blockchain/master/public/phone_photo.jpg" alt={`Image for Phone`} />
             <button className='buttonStyle' onClick={() => this.bid('phone')}>
               Bid
             </button>
@@ -293,7 +293,7 @@ class App extends Component {
           </div>
           <div className="box">
             <h3 className='titleStyle'>Computer</h3>
-            <img className='imageStyle' src="../../pc_photo.jpg" alt={`Image for Computer`} />
+            <img className='imageStyle' src="https://raw.githubusercontent.com/antonisb1/Blockchain/master/public/pc_photo.jpg" alt={`Image for Computer`} />
             <button className='buttonStyle' onClick={() => this.bid('computer')}>
               Bid
             </button>
