@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { toast, ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 class App extends Component {
+  
    state = {
     manager: '',
     carPlayers: [],
@@ -22,6 +23,7 @@ class App extends Component {
     numberOfPrizesWon: 0,
   };
 
+  
   async componentDidMount() {
     try {
       if (typeof window.ethereum === 'undefined') {
@@ -37,6 +39,10 @@ class App extends Component {
       const phonePlayers = await lottery.methods.getPlayers('phone').call();
       const computerPlayers = await lottery.methods.getPlayers('computer').call();
       const winners = await lottery.methods.getWinners().call();
+
+
+
+      
 
        const balance = await web3.eth.getBalance(lottery.options.address);
       this.setState({ message: '', manager, carPlayers, phonePlayers, computerPlayers, balance,lottery,winners });
@@ -124,7 +130,7 @@ class App extends Component {
   bid = async (prize) => {
     try {
 
-       if (this.state.currentAccount == this.state.manager) {
+      if (this.state.currentAccount.toLowerCase() === this.state.manager.toLowerCase()) {
         toast.warning("The owner cannot bid for the lottery.");
           
       } else {
@@ -140,26 +146,29 @@ class App extends Component {
   
   async declareWinners() {
     try {
-
- 
+      if (this.state.currentAccount.toLowerCase() === this.state.manager.toLowerCase()) {
+      
+              
          await lottery.methods.declareWinners().send({
           from: this.state.currentAccount,
           gas: 2000000,
         });
         toast.success('Winners Declared!');
-  
-      
-      
-        
-  
       // Fetch updated contract data after the withdrawal
       const balance = await web3.eth.getBalance(lottery.options.address);
       this.setState({ balance });
       console.log("Success");
-    } catch (error) {
-      console.error('Only the owner can declare winners:', error);
+      toast.success('Winners declared!', { position: 'bottom-left' });
+
+    }
+    else{
       toast.error('Only the owner can declare winners:', { position: 'bottom-left' });
 
+    }
+  }
+    catch (error) {
+      console.error('Only the owner can declare winners:', error);
+ 
     }
   }
   
@@ -169,31 +178,53 @@ class App extends Component {
     
   transferOwnership = async () => {
     const { newOwnerAddress } = this.state;
-
+ 
     try {
+      if (this.state.currentAccount.toLowerCase() === this.state.manager.toLowerCase()) {
+
       await lottery.methods.transferOwnership(newOwnerAddress).send({
         from: this.state.manager,
       });
       toast.success('Ownership transferred successfully!', { position: 'bottom-left' });
-    } catch (error) {
-      console.error('Error transferring ownership:', error);
-      toast.error('Only the owner can transfer ownership', { position: 'bottom-left' });
     }
+    else{
+      toast.error('Only the owner can transfer ownership', { position: 'bottom-left' });
+
+    } 
+  }
+    catch (error) {
+      console.error('Error transferring ownership:', error);
+     }
   };
   destroyContract = async () => {
-    try {
+  
+  try {
+    if (this.state.currentAccount.toLowerCase() === this.state.manager.toLowerCase()) {
+ 
       await lottery.methods.destroyContract().send({
         from: this.state.manager,
       });
       toast.success('Contract destroyed successfully!', { position: 'bottom-left' });
-    } catch (error) {
+  }
+  else{
+    toast.error('Only the owner can destroy the contract', { position: 'bottom-left' });
+
+
+  }
+  
+}
+  
+  
+  
+  catch (error) {
       console.error('Error destroying contract:', error);
-      toast.error('Only the owner can destroy the contract', { position: 'bottom-left' });
-    }
+     }
   };
 
   withdraw = async () => {
     try {
+      if (this.state.currentAccount.toLowerCase() === this.state.manager.toLowerCase()) {
+
       await lottery.methods.withdraw().send({
         from: this.state.currentAccount,
       });
@@ -202,17 +233,25 @@ class App extends Component {
       const balance = await web3.eth.getBalance(lottery.options.address);
       this.setState({ balance });
       console.log("sucess");
-    } catch (error) {
-      console.error('Only the owner can withdraw:', error);
+    }
+    else{
       toast.error('Only the owner can withdraw', { position: 'bottom-left' });
 
+
+    }
+    
+  }
+    
+    catch (error) {
+      console.error('Only the owner can withdraw:', error);
+ 
     }
   };
 
   async amIWinner() {
     try {
-      // Call the amIWinner function
-      const numberOfPrizesWon = await lottery.methods.amIWinner().call({
+      if (this.state.currentAccount.toLowerCase() != this.state.manager.toLowerCase()) {
+        const numberOfPrizesWon = await lottery.methods.amIWinner().call({
         from: this.state.currentAccount,
       });
 
@@ -227,7 +266,13 @@ class App extends Component {
       } else {
         console.log('Sorry, you did not win any prize.');
       }
-    } catch (error) {
+    } 
+    else{
+      toast.error('The owner can not win', { position: 'bottom-left' });
+
+    }
+    }
+    catch (error) {
       console.error('Error during amIWinner:', error);
     }
   }
@@ -237,44 +282,27 @@ class App extends Component {
 
   startNewCycle = async () => {
     try {
-      await lottery.methods.startNewCycle().send({
+
+      if (this.state.currentAccount.toLowerCase() === this.state.manager.toLowerCase()) {
+        await lottery.methods.startNewCycle().send({
         from: this.state.manager,
+        
       });
       toast.success('New cycle started successfully!', { position: 'bottom-left' });
+    }
+      else
+      toast.error('Only the owner can start a new cycle', { position: 'bottom-left' });
     } catch (error) {
       console.error('Error starting new cycle:', error);
-      toast.error('Error starting new cycle', { position: 'bottom-left' });
-    }
+     }
   };
-
-  async declareWinnersAndHandleEvents() {
-    try {
-      // Call the declareWinners function
-      const transaction = await lottery.methods.declareWinners().send({ from: this.state.currentAccount ,gas:2000000});  
  
-      // Log transaction hash
-      console.log('Transaction Hash:', transaction.transactionHash);
-  
-      // Wait for confirmation
-      const receipt = await web3.eth.getTransactionReceipt(transaction.transactionHash);
-  
-      // Get the winners from the contract state
-      const winners = receipt.logs
-        .filter((log) => log.topics[0] === web3.utils.sha3('WinnerPicked(address,string)'))
-        .map((log) => web3.eth.abi.decodeParameters(['address', 'string'], log.data));
-  
-      // Update local state with winners
-      this.setState({ winners: winners.map((winner) => winner[0]) });
-  
-      // Additional actions after confirmation (if needed)
-      // ...
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  }
 
+
+  
 
   render() {
+ 
     return (
       <>
         <h2 className='header'>Lottery - Ballot</h2>
