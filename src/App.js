@@ -157,7 +157,9 @@ class App extends Component {
       this.setState({ balance });
       console.log("Success");
     } catch (error) {
-      console.error('Error during declareWinners:', error);
+      console.error('Only the owner can declare winners:', error);
+      toast.error('Only the owner can declare winners:', { position: 'bottom-left' });
+
     }
   }
   
@@ -175,7 +177,7 @@ class App extends Component {
       toast.success('Ownership transferred successfully!', { position: 'bottom-left' });
     } catch (error) {
       console.error('Error transferring ownership:', error);
-      toast.error('Error transferring ownership', { position: 'bottom-left' });
+      toast.error('Only the owner can transfer ownership', { position: 'bottom-left' });
     }
   };
   destroyContract = async () => {
@@ -186,7 +188,7 @@ class App extends Component {
       toast.success('Contract destroyed successfully!', { position: 'bottom-left' });
     } catch (error) {
       console.error('Error destroying contract:', error);
-      toast.error('Error destroying contract', { position: 'bottom-left' });
+      toast.error('Only the owner can destroy the contract', { position: 'bottom-left' });
     }
   };
 
@@ -201,7 +203,9 @@ class App extends Component {
       this.setState({ balance });
       console.log("sucess");
     } catch (error) {
-      console.error('Error during withdrawal:', error);
+      console.error('Only the owner can withdraw:', error);
+      toast.error('Only the owner can withdraw', { position: 'bottom-left' });
+
     }
   };
 
