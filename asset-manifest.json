@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/BlockchainProject/static/css/main.6a945c81.css",
+    "main.js": "/BlockchainProject/static/js/main.f30e1ba5.js",
+    "static/js/787.e430cb2c.chunk.js": "/BlockchainProject/static/js/787.e430cb2c.chunk.js",
+    "index.html": "/BlockchainProject/index.html",
+    "main.6a945c81.css.map": "/BlockchainProject/static/css/main.6a945c81.css.map",
+    "main.f30e1ba5.js.map": "/BlockchainProject/static/js/main.f30e1ba5.js.map",
+    "787.e430cb2c.chunk.js.map": "/BlockchainProject/static/js/787.e430cb2c.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.6a945c81.css",
+    "static/js/main.f30e1ba5.js"
+  ]
+}
