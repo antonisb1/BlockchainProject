@@ -277,7 +277,7 @@ class App extends Component {
         <div className="container">
           <div className="box">
             <h3 className='titleStyle'>Car</h3>
-            <img className='imageStyle' src="../../car_photo.jpg" alt={`Image for Car`} />
+            <img className='imageStyle' src="https://ibb.co/Fh8nkbq" alt={`Image for Car`} />
             <button className='buttonStyle' onClick={() => this.bid('car')}>
               Bid
             </button>
